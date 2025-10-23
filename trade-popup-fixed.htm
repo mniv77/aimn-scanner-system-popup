@@ -357,7 +357,18 @@
             document.getElementById('strategy-status').textContent = '✅ Closed';
             document.getElementById('btn-panic').disabled = true;
             document.getElementById('btn-panic').className = 'bg-gray-600 text-gray-400 px-6 py-2 rounded-lg font-bold text-sm cursor-not-allowed';
-            
+            // 🔧 FIX: NOTIFY SCANNER BEFORE CLOSING
+            if (autoTradeMode && window.opener && !window.opener.closed) {
+                const message = {
+                    type: 'TRADE_CLOSED',
+                    symbol: tradeData.symbol,
+                    exchange: tradeData.exchange,
+                    pnl: finalPnl,
+                    reason: reason
+                };
+                console.log('📤 Sending close notification to scanner:', message);
+                window.opener.postMessage(message, '*');
+            }
             // AUTO-CLOSE LOGIC for auto-trade mode
             if (autoTradeMode) {
                 const waitTime = Math.floor(Math.random() * 60 + 60) * 1000; // Random 60-120 seconds
@@ -413,8 +424,28 @@
 
         function changeRSIType() { rsiType = document.getElementById('rsi-type').value; rsiHistory = []; }
         function changeChartRSI() { chartRSIType = document.getElementById('chart-rsi-type').value; loadTradingViewChart(); }
-        function quitPopup() { if (inPosition && !confirm('Active position. Really quit?')) return; window.close(); }
-
+        // function quitPopup() { if (inPosition && !confirm('Active position. Really quit?')) return; window.close(); }
+        function quitPopup() { 
+            if (inPosition && !confirm('Active position. Really quit?')) return;
+    
+            // 🔧 FIX: NOTIFY SCANNER ON MANUAL QUIT
+            if (autoTradeMode && window.opener && !window.opener.closed) {
+                const message = {
+                   type: 'TRADE_CLOSED',
+                   symbol: tradeData.symbol,
+                   exchange: tradeData.exchange,
+                   pnl: 0,
+                   reason: 'Manual quit'
+               };
+            console.log('📤 Sending quit notification to scanner:', message);
+            window.opener.postMessage(message, '*');
+        }
+    
+    window.close(); 
+}
+        
+        
+        
         window.onload = loadTradeData;
     </script>
 </body>
