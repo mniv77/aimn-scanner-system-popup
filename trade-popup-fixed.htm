@@ -357,9 +357,10 @@
             document.getElementById('strategy-status').textContent = '✅ Closed';
             document.getElementById('btn-panic').disabled = true;
             document.getElementById('btn-panic').className = 'bg-gray-600 text-gray-400 px-6 py-2 rounded-lg font-bold text-sm cursor-not-allowed';
-            // 🔧 FIX: NOTIFY SCANNER BEFORE CLOSING
+    
+           // 🔧 FIX: NOTIFY SCANNER BEFORE CLOSING
             if (autoTradeMode && window.opener && !window.opener.closed) {
-                const message = {
+                    const message = {
                     type: 'TRADE_CLOSED',
                     symbol: tradeData.symbol,
                     exchange: tradeData.exchange,
@@ -369,30 +370,28 @@
                 console.log('📤 Sending close notification to scanner:', message);
                 window.opener.postMessage(message, '*');
             }
+    
             // AUTO-CLOSE LOGIC for auto-trade mode
             if (autoTradeMode) {
-                const waitTime = Math.floor(Math.random() * 60 + 60) * 1000; // Random 60-120 seconds
-                const waitMinutes = (waitTime / 1000 / 60).toFixed(1);
-                console.log(`⏰ AUTO-CLOSE: Closing window in ${waitMinutes} minutes...`);
-                
-                // Show countdown
+                   const waitTime = Math.floor(Math.random() * 60 + 60) * 1000;
+                    const waitMinutes = (waitTime / 1000 / 60).toFixed(1);
+                    console.log(`⏰ AUTO-CLOSE: Closing window in ${waitMinutes} minutes...`);
+                }
                 setTimeout(() => {
-                    document.getElementById('strategy-status').textContent = `⏰ Auto-closing in ${waitMinutes} min...`;
+              `      document.getElementById('strategy-status').textContent = `⏰ Auto-closing in ${waitMinutes} min...`;
                 }, 3000);
-                
-                // Close window after wait time
+        
                 setTimeout(() => {
-                    console.log('👋 AUTO-CLOSE: Closing window now...');
-                    window.close();
-                }, waitTime);
-            } else {
-                // Manual mode - reset after 3 seconds
-                setTimeout(() => {
-                    document.getElementById('position-display').classList.add('hidden');
-                    document.getElementById('setup-display').classList.remove('hidden');
-                    document.getElementById('btn-enter').disabled = false;
-                    document.getElementById('btn-enter').className = 'flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm';
-                }, 3000);
+                console.log('👋 AUTO-CLOSE: Closing window now...');
+               window.close();
+           }, waitTime);
+       ` } else {
+            setTimeout(() => {
+                document.getElementById('position-display').classList.add('hidden');
+                document.getElementById('setup-display').classList.remove('hidden');
+                document.getElementById('btn-enter').disabled = false;
+               document.getElementById('btn-enter').className = 'flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm';
+    `   `     }, 3000);
             }
         }
 
