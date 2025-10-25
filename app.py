@@ -1,18 +1,35 @@
 # /aimn-trade-final/app.py
 import os
-from flask import Flask, render_template, jsonify, request
 import random
-from app_sub.views import main_bp
-from AImnMLResearch.aiml_dashboard import aiml_bp
+import logging
+from flask import Flask, render_template, jsonify, request
+
+# Optional blueprints – app runs without them if unavailable
+try:
+    from app_sub.views import main_bp  # type: ignore
+except Exception as e:  # pragma: no cover - optional dependency
+    logging.warning("Optional blueprint 'app_sub.views' not loaded: %s", e)
+    main_bp = None  # type: ignore
+
+try:
+    from AImnMLResearch.aiml_dashboard import aiml_bp  # type: ignore
+except Exception as e:  # pragma: no cover - optional dependency
+    logging.warning("Optional blueprint 'AImnMLResearch.aiml_dashboard' not loaded: %s", e)
+    aiml_bp = None  # type: ignore
+
+# Used by /api/scanner/create-signal
+import requests  # noqa: F401
 
 # Explicitly set template folder
 template_dir = os.path.abspath('templates')
 app = Flask(__name__, template_folder=template_dir)
 
 
-# Register blueprints with a prefix to avoid route conflicts
-app.register_blueprint(main_bp, url_prefix='/main')
-app.register_blueprint(aiml_bp, url_prefix='/aiml')
+# Register blueprints with a prefix to avoid route conflicts (only if available)
+if 'main_bp' in globals() and main_bp is not None:
+    app.register_blueprint(main_bp, url_prefix='/main')
+if 'aiml_bp' in globals() and aiml_bp is not None:
+    app.register_blueprint(aiml_bp, url_prefix='/aiml')
 
 for rule in app.url_map.iter_rules():
     print("ROUTE:", rule, rule.endpoint)
