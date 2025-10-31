@@ -1,403 +1,458 @@
-<!-- aimn-trade-final/templates/aimn_flowing_scanner_auto.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIMn Flowing Scanner Dashboard - AUTO MODE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes scroll {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        @keyframes scroll-reverse {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        .animate-scroll { animation: scroll 80s linear infinite; }
-        .animate-scroll-reverse { animation: scroll-reverse 60s linear infinite; }
-        @keyframes scanPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); transform: scale(1); }
-            50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); transform: scale(1.02); }
-        }
-        @keyframes scanGlow {
-            0%, 100% { border-color: #3b82f6; background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.2) 50%, rgba(59, 130, 246, 0.1) 100%); }
-            50% { border-color: #60a5fa; background: linear-gradient(90deg, rgba(96, 165, 250, 0.2) 0%, rgba(96, 165, 250, 0.3) 50%, rgba(96, 165, 250, 0.2) 100%); }
-        }
-        @keyframes scannerBeam { 0% { left: -100%; } 100% { left: 100%; } }
-        .row-testing {
-            animation: scanPulse 2s infinite, scanGlow 3s infinite;
-            border: 2px solid #3b82f6 !important;
-            position: relative; overflow: hidden;
-            background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.25) 50%, rgba(59, 130, 246, 0.15) 100%);
-            z-index: 10;
-        }
-        .row-testing::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
-            animation: scannerBeam 2s infinite; z-index: 1;
-        }
-        .row-testing::after {
-            content: 'AUTO-TRADING...'; position: absolute; top: 2px; right: 2px;
-            background: #3b82f6; color: white; padding: 2px 6px; border-radius: 3px;
-            font-size: 10px; font-weight: bold; z-index: 2; animation: pulse 1s infinite;
-        }
-        .broker-available { background: rgba(0, 128, 0, 0.2); border-color: #10b981; }
-        .broker-busy { background: rgba(255, 140, 0, 0.2); border-color: #f59e0b; }
-        .symbol-available { background: rgba(0, 200, 0, 0.15); border-left: 4px solid #10b981; }
-        .symbol-busy-active { background: rgba(220, 38, 38, 0.2); border-left: 4px solid #dc2626; }
-        .symbol-busy-blocked { background: rgba(120, 53, 15, 0.2); border-left: 4px solid #92400e; }
-        .ticker-available { background: #065f46; border: 1px solid #10b981; color: #d1fae5; }
-        .ticker-active-trade { background: #7f1d1d; border: 1px solid #dc2626; color: #fecaca; }
-        .ticker-blocked { background: #451a03; border: 1px solid #92400e; color: #fcd34d; opacity: 0.7; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AIMn Flowing Scanner Dashboard - AUTO MODE</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes scroll {0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+    @keyframes scroll-reverse {0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    .animate-scroll{animation:scroll 80s linear infinite}
+    .animate-scroll-reverse{animation:scroll-reverse 60s linear infinite}
+    @keyframes scanPulse {0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.7);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(59,130,246,0);transform:scale(1.02)}}
+    @keyframes scanGlow {0%,100%{border-color:#3b82f6;background:linear-gradient(90deg,rgba(59,130,246,.1) 0%,rgba(59,130,246,.2) 50%,rgba(59,130,246,.1) 100%)}50%{border-color:#60a5fa;background:linear-gradient(90deg,rgba(96,165,250,.2) 0%,rgba(96,165,250,.3) 50%,rgba(96,165,250,.2) 100%)}}
+    @keyframes scannerBeam {0%{left:-100%}100%{left:100%}}
+    .row-testing{animation:scanPulse 2s infinite,scanGlow 3s infinite;border:2px solid #3b82f6!important;position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(59,130,246,.15) 0%,rgba(59,130,246,.25) 50%,rgba(59,130,246,.15) 100%);z-index:10}
+    .row-testing::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.3) 50%,transparent 100%);animation:scannerBeam 2s infinite;z-index:1}
+    .row-testing::after{content:'AUTO-TRADING...';position:absolute;top:2px;right:2px;background:#3b82f6;color:#fff;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:bold;z-index:2;animation:pulse 1s infinite}
+    .broker-available{background:rgba(0,128,0,.2);border-color:#10b981}
+    .broker-busy{background:rgba(255,140,0,.2);border-color:#f59e0b}
+    .symbol-available{background:rgba(0,200,0,.15);border-left:4px solid #10b981}
+    .symbol-busy-active{background:rgba(220,38,38,.2);border-left:4px solid #dc2626}
+    .symbol-busy-blocked{background:rgba(120,53,15,.2);border-left:4px solid #92400e}
+    .ticker-available{background:#065f46;border:1px solid #10b981;color:#d1fae5}
+    .ticker-active-trade{background:#7f1d1d;border:1px solid #dc2626;color:#fecaca}
+    .ticker-blocked{background:#451a03;border:1px solid #92400e;color:#fcd34d;opacity:.85}
+  </style>
 </head>
 <body class="bg-gray-900 text-white">
-    <div class="p-4 mb-4">
-        <h1 class="text-3xl font-bold text-center mb-2">🤖 AIMn Auto-Trading Scanner</h1>
-        <p class="text-center text-gray-400">Fully Automated Multi-Exchange Market Scanning & Trading</p>
-        <p class="text-center text-xs text-green-400 mt-1">⚡ AUTO MODE - Trades execute automatically when signals detected</p>
+  <div class="p-4 mb-4">
+    <h1 class="text-3xl font-bold text-center mb-2">🤖 AIMn Auto-Trading Scanner</h1>
+    <p class="text-center text-gray-400">Fully Automated Multi-Exchange Market Scanning & Trading</p>
+    <p class="text-center text-xs text-green-400 mt-1">⚡ AUTO MODE - Trades execute automatically when signals detected</p>
 
-        <!-- Test Buttons -->
-        <div class="text-center mt-4">
-            <div class="flex justify-center gap-4">
-                <button onclick="openTradePopupTestStock()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all">
-                    📊 Manual Test - Stock (AAPL)
-                </button>
-                <button onclick="openTradePopupTestCrypto()"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all">
-                    ₿ Manual Test - Crypto (BTC)
-                </button>
-            </div>
-            <p class="text-gray-500 text-sm mt-2">Manual tests open popup without auto-trade | Scanner runs auto-trade mode</p>
+    <!-- Controls -->
+    <div class="mt-4 max-w-5xl mx-auto bg-gray-800 rounded-lg p-3">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div>
+          <label class="text-xs text-gray-400">Mode</label>
+          <select id="mode" class="w-full bg-gray-700 text-white p-2 rounded">
+            <option value="aggressive">Aggressive (more signals)</option>
+            <option value="balanced" selected>Balanced</option>
+            <option value="conservative">Conservative (fewer signals)</option>
+          </select>
         </div>
-
-        <div class="text-center mt-3">
-            <div class="inline-flex items-center space-x-2 bg-blue-600 px-4 py-2 rounded-lg">
-                <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                <span class="text-sm font-semibold">Currently Testing: <span id="current-testing-symbol" class="font-mono">--</span></span>
-            </div>
+        <div>
+          <label class="text-xs text-gray-400">RSI Type</label>
+          <select id="rsi-type" class="w-full bg-gray-700 text-white p-2 rounded">
+            <option value="real" selected>RSIReal (price-level)</option>
+            <option value="wilder">RSI Wilder</option>
+          </select>
         </div>
+        <div class="flex items-end gap-3">
+          <label class="inline-flex items-center gap-2 text-sm"><input id="f-macd" type="checkbox" class="accent-blue-500" checked/> MACD</label>
+          <label class="inline-flex items-center gap-2 text-sm"><input id="f-vol"  type="checkbox" class="accent-blue-500"/> Volume</label>
+          <label class="inline-flex items-center gap-2 text-sm"><input id="f-atr"  type="checkbox" class="accent-blue-500"/> ATR</label>
+          <button id="apply-controls" class="ml-auto bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded text-sm font-semibold">Apply</button>
+        </div>
+      </div>
+      <div class="text-xs text-gray-400 mt-2">Tip: Aggressive + RSIReal + fewer filters ⇒ more trades.</div>
     </div>
 
-    <div class="mx-4 mb-4 bg-gray-800 rounded-lg p-4">
-        <h2 class="text-xl font-semibold mb-3">Broker Status</h2>
-        <div id="exchange-status" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
+    <!-- Manual Test -->
+    <div class="text-center mt-4">
+      <div class="flex justify-center gap-4">
+        <button onclick="openTradePopupTestStock()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all">
+          📊 Manual Test - Stock (AAPL)
+        </button>
+        <button onclick="openTradePopupTestCrypto()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all">
+          ₿ Manual Test - Crypto (BTC)
+        </button>
+      </div>
+      <p class="text-gray-500 text-sm mt-2">Manual tests open popup without auto-trade | Scanner runs auto-trade mode</p>
+      <div class="inline-flex items-center space-x-2 bg-blue-600 px-4 py-2 rounded-lg mt-3">
+        <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+        <span class="text-sm font-semibold">Currently Testing: <span id="current-testing-symbol" class="font-mono">--</span></span>
+      </div>
     </div>
+  </div>
 
-    <div class="mb-4 bg-black border-y border-gray-700">
-        <div class="relative overflow-hidden py-3">
-            <div id="main-ticker" class="flex animate-scroll whitespace-nowrap"></div>
-        </div>
-        <div class="space-y-1">
-            <div class="relative overflow-hidden bg-gray-900 py-2">
-                <div id="flow-1" class="flex animate-scroll-reverse whitespace-nowrap"></div>
-            </div>
-            <div class="relative overflow-hidden bg-gray-900 py-2">
-                <div id="flow-2" class="flex animate-scroll whitespace-nowrap"></div>
-            </div>
-        </div>
+  <!-- Broker Status -->
+  <div class="mx-4 mb-4 bg-gray-800 rounded-lg p-4">
+    <h2 class="text-xl font-semibold mb-3">Broker Status</h2>
+    <div id="exchange-status" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
+  </div>
+
+  <!-- Tickers -->
+  <div class="mb-4 bg-black border-y border-gray-700">
+    <div class="relative overflow-hidden py-3">
+      <div id="main-ticker" class="flex animate-scroll whitespace-nowrap"></div>
     </div>
-
-    <div class="mx-4 bg-gray-800 rounded-lg p-4">
-        <div class="flex justify-between items-center mb-3">
-            <h2 class="text-xl font-semibold">Detailed Scan Results</h2>
-            <div class="flex items-center space-x-2 text-sm">
-                <div class="w-3 h-3 bg-blue-500 rounded animate-pulse"></div>
-                <span class="text-gray-400">Row <span id="testing-row-number">-</span> Currently Being Analyzed</span>
-            </div>
-        </div>
-        <div class="overflow-hidden">
-            <div class="grid grid-cols-9 gap-2 text-sm font-semibold text-gray-400 mb-2 px-2">
-                <div>Broker</div><div>Symbol</div><div>Status</div><div>Price</div><div>Change</div>
-                <div>Volume</div><div>RSI</div><div>Signal</div><div>Action</div>
-            </div>
-            <div id="scan-results" class="max-h-96 overflow-y-auto space-y-1"></div>
-        </div>
+    <div class="space-y-1">
+      <div class="relative overflow-hidden bg-gray-900 py-2">
+        <div id="flow-1" class="flex animate-scroll-reverse whitespace-nowrap"></div>
+      </div>
+      <div class="relative overflow-hidden bg-gray-900 py-2">
+        <div id="flow-2" class="flex animate-scroll whitespace-nowrap"></div>
+      </div>
     </div>
+  </div>
 
-    <div class="m-4 text-center">
-        <a href="/" class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
-            ← Back to Dashboard
-        </a>
+  <!-- Grid -->
+  <div class="mx-4 bg-gray-800 rounded-lg p-4">
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-semibold">Detailed Scan Results</h2>
+      <div class="flex items-center space-x-2 text-sm">
+        <div class="w-3 h-3 bg-blue-500 rounded animate-pulse"></div>
+        <span class="text-gray-400">Row <span id="testing-row-number">-</span> Currently Being Analyzed</span>
+      </div>
     </div>
-
-    <div class="m-4 bg-gray-800 rounded-lg p-4">
-        <h3 class="text-lg font-semibold mb-2">Broker Trading Logic & Status Legend</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div class="space-y-2">
-                <div class="flex items-center space-x-2"><div class="w-4 h-4 bg-green-500 rounded"></div><span><strong>GREEN</strong> - Broker available</span></div>
-                <div class="flex items-center space-x-2"><div class="w-4 h-4 bg-red-600 rounded"></div><span><strong>RED</strong> - Currently trading</span></div>
-                <div class="flex items-center space-x-2"><div class="w-4 h-4 bg-yellow-700 rounded"></div><span><strong>BROWN</strong> - Blocked</span></div>
-                <div class="flex items-center space-x-2"><div class="w-4 h-2 bg-blue-500 rounded border-2 border-blue-300 animate-pulse"></div><span><strong>4th Row - Auto-Trading Position</strong></span></div>
-            </div>
-            <div class="space-y-2">
-                <div class="text-xs bg-gray-700 p-2 rounded"><strong>Rule:</strong> ONE trade per broker</div>
-                <div class="text-xs bg-gray-700 p-2 rounded"><strong>Conveyor:</strong> Symbols move up</div>
-                <div class="text-xs bg-gray-700 p-2 rounded"><strong>On Exit:</strong> All symbols turn GREEN</div>
-                <div class="text-xs bg-green-700 p-2 rounded font-bold"><strong>🤖 AUTO:</strong> Trades execute automatically</div>
-            </div>
-        </div>
+    <div class="overflow-hidden">
+      <div class="grid grid-cols-10 gap-2 text-sm font-semibold text-gray-400 mb-2 px-2">
+        <div>Broker</div><div>Symbol</div><div>Status</div><div>Price</div><div>Change</div>
+        <div>Volume</div><div>RSI</div><div>MACD</div><div>Signal</div><div>Action</div>
+      </div>
+      <div id="scan-results" class="max-h-96 overflow-y-auto space-y-1"></div>
     </div>
+  </div>
 
-    <script>
-        let scanData = [], tickerItems = [], exchanges = {}, testingInterval;
-        let openedTrades = new Set(); // Track which symbols already have open popups
+  <div class="m-4 text-center">
+    <a href="/" class="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">← Back to Dashboard</a>
+  </div>
 
-        function init() {
-            updateExchangeStatus();
-            updateScanResults();
-            updateTickerDisplay();
-            startTestingSimulation();
+  <script>
+    // ----------------- State -----------------
+    let exchanges = {}, scanData = [], tickerItems = [];
+    let testingRowIndex = 3; // 4th row
+    let activeTradeSymbol = null, activeTradeExchange = null;
+
+    // Controls
+    function getControls() {
+      return {
+        mode: document.getElementById('mode').value,               // aggressive|balanced|conservative
+        rsiType: document.getElementById('rsi-type').value,        // real|wilder
+        useMACD: document.getElementById('f-macd').checked,
+        useVOL: document.getElementById('f-vol').checked,
+        useATR: document.getElementById('f-atr').checked
+      };
+    }
+
+    // ----------------- Init -----------------
+    function init() {
+      generateSampleExchangeData();
+      generateSampleScanData();
+      generateSampleTickerData();
+      updateExchangeStatus();
+      updateTickerDisplay();
+      updateScanResultsDisplay();
+
+      // Rotation
+      setInterval(conveyorBeltRotate, 4000);
+
+      // Periodic status refresh
+      setInterval(() => {
+        updateExchangeStatus();
+        updateTickerDisplay();
+      }, 5000);
+
+      // Simulate ticker micro-moves
+      setInterval(() => {
+        if (!tickerItems.length) return;
+        tickerItems.forEach(item => {
+          item.price = (parseFloat(item.price) + (Math.random()-0.5)*2).toFixed(2);
+          item.change = ((Math.random()-0.5)*10).toFixed(2);
+        });
+        updateTickerDisplay();
+      }, 1500);
+
+      document.getElementById('apply-controls').addEventListener('click', () => {
+        generateSampleScanData();
+        updateScanResultsDisplay();
+      });
+    }
+
+    // ----------------- Rotation -----------------
+    function conveyorBeltRotate() {
+      if (!scanData.length) return;
+      const first = scanData.shift();
+      scanData.push(first);
+      updateScanResultsDisplay();
+      checkAndOpenPopups();
+    }
+
+    // ----------------- Displays -----------------
+    function updateScanResultsDisplay() {
+      const container = document.getElementById('scan-results');
+      if (!container) return;
+      container.innerHTML = '';
+
+      scanData.forEach((row, index) => {
+        const isTestingRow = (index === testingRowIndex);
+
+        let statusClass = '', statusText = '';
+        if (isTestingRow) {
+          statusClass = 'row-testing'; statusText = '🔍 TESTING';
+        } else if (row.symbol === activeTradeSymbol) {
+          statusClass = 'symbol-busy-active'; statusText = '🔴 TRADING';
+        } else if (activeTradeExchange && row.exchange === activeTradeExchange) {
+          statusClass = 'symbol-busy-blocked'; statusText = '🟤 BLOCKED';
+        } else {
+          statusClass = 'symbol-available'; statusText = '🟢 AVAILABLE';
         }
 
-        function startTestingSimulation() {
-            testingInterval = setInterval(() => {
-                if (scanData.length > 0) {
-                    updateTestingIndicators();
-                    updateScanResultsDisplay();
-                }
-            }, 2500);
+        const div = document.createElement('div');
+        div.className = `grid grid-cols-10 gap-2 p-2 mb-1 rounded ${statusClass} text-sm items-center`;
+        div.innerHTML = `
+          <div class="font-semibold">${row.exchange}</div>
+          <div class="font-mono font-bold ${isTestingRow ? 'text-xl' : ''}">${row.symbol}</div>
+          <div class="text-xs font-semibold">${statusText}</div>
+          <div>$${row.price}</div>
+          <div class="${parseFloat(row.change)>=0 ? 'text-green-400':'text-red-400'}">${row.change}%</div>
+          <div class="text-xs">${row.volume}</div>
+          <div class="${row.rsiColor}">${row.rsi}</div>
+          <div class="${row.macd>0?'text-green-300':'text-red-300'}">${row.macd.toFixed(2)}</div>
+          <div class="font-semibold ${row.signal==='BUY'?'text-green-400':row.signal==='SELL'?'text-red-400':'text-gray-400'}">${row.signal}</div>
+          <div class="text-xs">${isTestingRow?'🎯 ANALYZING': row.signal!=='NEUTRAL' ? '📊 SIGNAL':'⏸️ WAITING'}</div>
+        `;
+        container.appendChild(div);
+      });
+
+      if (scanData[testingRowIndex]) {
+        document.getElementById('current-testing-symbol').textContent = scanData[testingRowIndex].symbol;
+        document.getElementById('testing-row-number').textContent = testingRowIndex + 1;
+      }
+    }
+
+    function updateExchangeStatus() {
+      fetch('/api/exchange-status')
+        .then(r => r.json())
+        .then(data => { exchanges = data; updateExchangeStatusDisplay(); })
+        .catch(() => { updateExchangeStatusDisplay(); });
+    }
+
+    function updateExchangeStatusDisplay() {
+      const container = document.getElementById('exchange-status');
+      container.innerHTML = '';
+      const names = Object.keys(exchanges).length ? Object.keys(exchanges) : Object.keys(sampleExchanges());
+      names.forEach(name => {
+        const info = exchanges[name] || { symbolCount: 100, scanning: true };
+        const isAvailable = !activeTradeExchange || activeTradeExchange !== name;
+        const statusClass = isAvailable ? 'broker-available' : 'broker-busy';
+        const div = document.createElement('div');
+        div.className = `${statusClass} border-2 rounded-lg p-3 transition-all duration-500`;
+        div.innerHTML = `
+          <div class="font-bold text-lg">${name}</div>
+          <div class="text-sm mt-1">${info.symbolCount||'—'} symbols</div>
+          <div class="text-xs mt-2 ${isAvailable ? 'text-green-300':'text-orange-300'}">
+            ${isAvailable ? '🟢 AVAILABLE' : '🔴 TRADING: ' + (activeTradeSymbol||'')}
+          </div>`;
+        container.appendChild(div);
+      });
+    }
+
+    function updateTickerDisplay() {
+      ['main-ticker', 'flow-1', 'flow-2'].forEach(id => {
+        const c = document.getElementById(id); if (!c) return;
+        c.innerHTML = '';
+        tickerItems.forEach(item => {
+          let cls = 'ticker-available';
+          if (item.symbol === activeTradeSymbol) cls = 'ticker-active-trade';
+          else if (activeTradeExchange && item.exchange === activeTradeExchange) cls = 'ticker-blocked';
+          const div = document.createElement('div');
+          div.className = `${cls} px-4 py-2 mx-2 rounded inline-block transition-colors duration-500`;
+          div.innerHTML = `<span class="font-mono font-semibold">${item.symbol}</span>
+            <span class="ml-2">$${item.price}</span>
+            <span class="ml-2 ${parseFloat(item.change)>=0?'text-green-300':'text-red-300'}">${item.change}%</span>
+            ${item.signal && item.signal!=='NEUTRAL' ? `<span class="ml-1 text-xs ${item.signal==='BUY'?'text-green-300':'text-red-300'}">${item.signal}</span>`:''}`;
+          c.appendChild(div);
+        });
+      });
+    }
+
+    // ----------------- Data -----------------
+    function sampleExchanges() {
+      return {
+        'ALPACA': { scanning: true, symbolCount: 250 },
+        'CRYPTO': { scanning: true, symbolCount: 100 },
+        'FOREX':  { scanning: true, symbolCount: 50 },
+        'NYSE':   { scanning: true, symbolCount: 200 },
+        'NASDAQ': { scanning: true, symbolCount: 200 }
+      };
+    }
+
+    function generateSampleExchangeData() { exchanges = sampleExchanges(); }
+
+    function generateSampleScanData() {
+      const { mode, rsiType, useMACD, useVOL, useATR } = getControls();
+
+      const base = [
+        {symbol:'BTC/USD', exchange:'CRYPTO'},
+        {symbol:'ETH/USD', exchange:'CRYPTO'},
+        {symbol:'AAPL', exchange:'ALPACA'},
+        {symbol:'TSLA', exchange:'ALPACA'},
+        {symbol:'NVDA', exchange:'ALPACA'},
+        {symbol:'SPY', exchange:'NYSE'},
+        {symbol:'QQQ', exchange:'NASDAQ'},
+        {symbol:'MSFT', exchange:'NASDAQ'},
+        {symbol:'AMZN', exchange:'NASDAQ'},
+        {symbol:'GOOGL', exchange:'ALPACA'},
+        {symbol:'META', exchange:'NASDAQ'},
+        {symbol:'NFLX', exchange:'ALPACA'},
+        {symbol:'AMD', exchange:'NASDAQ'},
+        {symbol:'INTC', exchange:'NASDAQ'}
+      ];
+
+      const modeBias = {aggressive: 0.55, balanced: 0.35, conservative: 0.2}; // higher => more signals
+      const bias = modeBias[mode] || 0.35;
+
+      scanData = base.map(({symbol, exchange}) => {
+        // price/change
+        const price = (Math.random()*500 + 50);
+        const change = ((Math.random()-0.5)*10);
+
+        // RSIReal vs Wilder
+        const rsiReal = (Math.random()*100);
+        const rsiWilder = (Math.random()*100);
+        const rsiVal = rsiType === 'real' ? rsiReal : rsiWilder;
+        const rsiColor = rsiVal < 30 ? 'text-green-400 font-bold' : (rsiVal > 70 ? 'text-red-400 font-bold' : '');
+
+        // MACD dummy
+        const macd = (Math.random()-0.5)*2;
+
+        // Volume / ATR gates (optional, make loose)
+        const volPass = !useVOL || Math.random() > 0.25;
+        const atrPass = !useATR || Math.random() > 0.25;
+        const macdPass = !useMACD || Math.random() > 0.35;
+
+        // Signal probability influenced by mode + RSI
+        let signal = 'NEUTRAL';
+        if (volPass && atrPass && macdPass) {
+          if (rsiType === 'real') {
+            if (rsiVal < 32 && Math.random() < bias) signal = 'BUY';
+            else if (rsiVal > 68 && Math.random() < bias) signal = 'SELL';
+          } else {
+            if (rsiVal < 30 && Math.random() < bias*0.9) signal = 'BUY';
+            else if (rsiVal > 70 && Math.random() < bias*0.9) signal = 'SELL';
+          }
         }
 
-        function updateTestingIndicators() {
-            const currentSymbol = scanData[3]; // 4th row = testing position
-            
-            if (currentSymbol && currentSymbol.isAvailable && !currentSymbol.isActivelyTrading) {
-                const symbolKey = `${currentSymbol.exchange}:${currentSymbol.symbol}`;
-                document.getElementById('current-testing-symbol').textContent = symbolKey;
-                
-                // AUTO-TRIGGER: Simplified criteria for MORE trades
-                const rsi = parseFloat(currentSymbol.rsi);
-                const shouldTrade = (
-                    (currentSymbol.signal === 'BUY' || currentSymbol.signal === 'SELL') ||  // Has signal
-                    (rsi < 40 || rsi > 60)  // RSI extreme (loosened from 35/65)
-                );
-                
-                // Check if we haven't already opened a trade for this symbol
-                if (shouldTrade && !openedTrades.has(symbolKey)) {
-                    console.log(`🎯 AUTO-TRIGGER: ${symbolKey} meets criteria!`);
-                    console.log(`   Signal: ${currentSymbol.signal}, RSI: ${rsi}`);
-                    console.log(`   Opening trade popup...`);
-                    
-                    openTradePopupForSignal(currentSymbol);
-                    
-                    // Mark symbol as having an open trade
-                    openedTrades.add(symbolKey);
-                    currentSymbol.isActivelyTrading = true;
-                    currentSymbol.isAvailable = false;
-                    
-                    // Clear the tracking after 3 minutes (safety)
-                    setTimeout(() => {
-                        openedTrades.delete(symbolKey);
-                        console.log(`✅ Cleared tracking for ${symbolKey}`);
-                    }, 180000);
-                }
-            } else {
-                document.getElementById('current-testing-symbol').textContent = 'SKIPPING BLOCKED';
-            }
-            
-            document.getElementById('testing-row-number').textContent = 4;
-        }
+        const qty = exchange === 'CRYPTO' ? 0.01 : 10;
 
-        function updateExchangeStatus() {
-            fetch('/api/exchange-status')
-                .then(response => response.json())
-                .then(data => {
-                    exchanges = data;
-                    const container = document.getElementById('exchange-status');
-                    container.innerHTML = '';
-                    Object.entries(data).forEach(([id, ex]) => {
-                        const div = document.createElement('div');
-                        div.className = `p-3 rounded-lg border-2 transition-all duration-500 ${ex.scanning ? 'broker-available' : 'broker-busy'}`;
-                        div.innerHTML = `<div class="flex items-center justify-between mb-2"><span class="font-semibold">${id}</span>
-                            <div class="w-3 h-3 rounded-full ${ex.scanning ? 'bg-green-500 animate-pulse' : 'bg-orange-500'}"></div></div>
-                            <div class="text-sm text-gray-300">${ex.scanning ? `Scanning ${ex.symbolCount || 0} symbols` : `Trading: ${ex.activeSymbol || 'Unknown'}`}</div>
-                            <div class="text-xs mt-1">Status: ${ex.scanning ? '<span class="text-green-400 font-semibold">AVAILABLE</span>' : '<span class="text-orange-400 font-semibold">BUSY</span>'}</div>`;
-                        container.appendChild(div);
-                    });
-                })
-                .catch(() => { generateSampleExchangeData(); updateExchangeStatus(); });
-        }
+        return {
+          symbol, exchange,
+          price: price.toFixed(2),
+          change: change.toFixed(2),
+          volume: Math.floor(Math.random()*1_000_000).toLocaleString(),
+          rsi: rsiVal.toFixed(1),
+          rsiColor,
+          macd,
+          signal,
+          quantity: qty
+        };
+      });
+    }
 
-        function updateScanResults() {
-            fetch('/api/flowing-scanner-data')
-                .then(response => response.json())
-                .then(data => {
-                    if (scanData.length === 0) scanData = data.scanResults || [];
-                    updateScanResultsDisplay();
-                })
-                .catch(() => { generateSampleScanData(); updateScanResultsDisplay(); });
-        }
+    function generateSampleTickerData() {
+      const syms = [
+        {symbol: 'BTC/USD', exchange: 'CRYPTO'},{symbol:'ETH/USD',exchange:'CRYPTO'},
+        {symbol: 'AAPL', exchange: 'ALPACA'}, {symbol:'TSLA', exchange:'ALPACA'},
+        {symbol: 'NVDA', exchange: 'ALPACA'}, {symbol:'SPY', exchange:'NYSE'},
+        {symbol: 'QQQ', exchange: 'NASDAQ'},{symbol:'MSFT',exchange:'NASDAQ'},
+        {symbol: 'AMZN', exchange: 'NASDAQ'},{symbol:'GOOGL',exchange:'ALPACA'}
+      ];
+      tickerItems = syms.map(({symbol,exchange}) => ({
+        symbol, exchange,
+        price: (Math.random()*500+50).toFixed(2),
+        change: ((Math.random()-0.5)*10).toFixed(2),
+        signal: Math.random()>0.6 ? (Math.random()>0.5?'BUY':'SELL') : 'NEUTRAL'
+      }));
+    }
 
-        function updateScanResultsDisplay() {
-            const container = document.getElementById('scan-results');
-            container.innerHTML = '';
-            if (scanData.length > 1) { const first = scanData.shift(); scanData.push(first); }
+    // ----------------- Popup flow -----------------
+    function openTradePopupForSignal(row) {
+      // set active broker/symbol
+      activeTradeSymbol = row.symbol;
+      activeTradeExchange = row.exchange;
+      updateScanResultsDisplay();
+      updateExchangeStatusDisplay();
+      updateTickerDisplay();
 
-            scanData.slice(0, 20).forEach((item, index) => {
-                const div = document.createElement('div');
-                let statusClass = item.isActivelyTrading ? 'symbol-busy-active' : !item.isAvailable ? 'symbol-busy-blocked' : 'symbol-available';
-                let statusText = item.isActivelyTrading ? 'TRADING' : !item.isAvailable ? 'BLOCKED' : 'AVAILABLE';
-                let statusColor = item.isActivelyTrading ? 'text-red-400' : !item.isAvailable ? 'text-yellow-600' : 'text-green-400';
-                const isTestingRow = index === 3;
-                if (isTestingRow) statusClass += ' row-testing';
-                div.className = `grid grid-cols-9 gap-2 p-2 rounded transition-all duration-700 transform ${statusClass} relative`;
-                const signalColor = item.signal === 'BUY' ? 'rgb(0, 200, 0)' : item.signal === 'SELL' ? 'rgb(200, 0, 0)' : 'rgb(100, 100, 100)';
-                div.innerHTML = `<div class="text-sm ${statusColor} font-medium relative z-10">${item.exchange}${isTestingRow ? '<div class="w-2 h-2 bg-blue-400 rounded-full animate-ping absolute -top-1 -right-1"></div>' : ''}</div>
-                    <div class="text-sm font-mono font-bold relative z-10">${item.symbol}</div>
-                    <div class="text-xs relative z-10"><span class="px-2 py-1 rounded text-xs font-semibold ${item.isActivelyTrading ? 'bg-red-600 text-white' : !item.isAvailable ? 'bg-yellow-700 text-yellow-100' : 'bg-green-600 text-white'}">${statusText}</span></div>
-                    <div class="text-sm font-mono relative z-10">$${item.price}</div>
-                    <div class="text-sm font-mono ${parseFloat(item.change) >= 0 ? 'text-green-400' : 'text-red-400'} relative z-10">${item.change > 0 ? '+' : ''}${item.change}%</div>
-                    <div class="text-sm font-mono text-gray-300 relative z-10">${item.volume}</div>
-                    <div class="text-sm font-mono relative z-10 ${isTestingRow ? 'font-bold text-blue-300' : ''}">${item.rsi}</div>
-                    <div class="text-sm font-bold relative z-10 ${isTestingRow ? 'text-white' : ''}" style="color: ${isTestingRow ? '#ffffff' : signalColor}">${item.signal}${isTestingRow ? '<span class="ml-1 text-xs bg-blue-500 px-1 rounded">AUTO</span>' : ''}</div>
-                    <div class="text-sm relative z-10">${item.isAvailable && !item.isActivelyTrading ? 
-                        `<button onclick='openTradePopupForSignal(${JSON.stringify(item).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold">${isTestingRow ? '🤖 AUTO' : 'TEST'}</button>` : 
-                        '<button class="bg-gray-600 text-gray-400 px-3 py-1 rounded text-xs cursor-not-allowed" disabled>-</button>'}</div>`;
-                container.appendChild(div);
-            });
-        }
+      const side = row.signal === 'SELL' ? 'SELL' : 'BUY';
 
-        function updateTickerDisplay() {
-            fetch('/api/ticker-feed')
-                .then(response => response.json())
-                .then(data => { tickerItems = data; updateTickerElements(); })
-                .catch(() => { generateSampleTickerData(); updateTickerElements(); });
-        }
+      const params = new URLSearchParams({
+        symbol: row.symbol,
+        exchange: row.exchange,
+        side,
+        qty: row.quantity || 1,
+        price: row.price,
+        change: row.change,
+        rsi: row.rsi,
+        signal: row.signal,
+        reason: `Scanner detected ${row.signal} - RSI:${row.rsi}, Vol:${row.volume}`
+      });
 
-        function updateTickerElements() {
-            const mainTicker = document.getElementById('main-ticker');
-            const flow1 = document.getElementById('flow-1');
-            const flow2 = document.getElementById('flow-2');
-            mainTicker.innerHTML = '';
-            [...tickerItems, ...tickerItems, ...tickerItems].forEach(item => {
-                const div = document.createElement('div');
-                let tickerClass = item.isActivelyTrading ? 'ticker-active-trade' : !item.isAvailable ? 'ticker-blocked' : 'ticker-available';
-                let badge = item.isActivelyTrading ? '<span class="ml-2 text-xs bg-red-600 px-2 py-1 rounded">TRADING</span>' : !item.isAvailable ? '<span class="ml-2 text-xs bg-yellow-700 px-2 py-1 rounded">BLOCKED</span>' : '';
-                div.className = `inline-flex items-center mx-4 px-3 py-2 rounded-lg transition-all duration-500 ${tickerClass}`;
-                div.innerHTML = `<div class="w-2 h-2 rounded-full mr-2 ${item.isActivelyTrading ? 'bg-red-400' : !item.isAvailable ? 'bg-yellow-600' : 'bg-green-400'}"></div>
-                    <span class="font-bold text-xs mr-2">${item.exchange}</span><span class="font-mono text-sm mr-2">${item.symbol}</span>
-                    <span class="font-mono text-sm mr-2">$${item.price}</span><span class="font-mono text-sm ${parseFloat(item.change) >= 0 ? 'text-green-300' : 'text-red-300'}">${item.change > 0 ? '+' : ''}${item.change}%</span>${badge}`;
-                mainTicker.appendChild(div);
-            });
-            [flow1, flow2].forEach((container, index) => {
-                container.innerHTML = '';
-                const items = tickerItems.slice(index * 8, index * 8 + 8);
-                [...items, ...items, ...items].forEach(item => {
-                    const div = document.createElement('div');
-                    let flowClass = item.isActivelyTrading ? 'bg-red-800 text-red-100 border-l-2 border-red-400' : !item.isAvailable ? 'bg-yellow-800 text-yellow-200 border-l-2 border-yellow-600 line-through' : 'bg-green-800 text-green-100 border-l-2 border-green-400';
-                    div.className = `inline-flex items-center mx-3 px-2 py-1 rounded transition-all duration-300 ${flowClass}`;
-                    div.innerHTML = `<span class="text-xs font-bold mr-1">${item.exchange}</span><span class="text-sm font-mono mr-1">${item.symbol}</span><span class="text-xs">$${item.price}</span>
-                        ${item.signal && item.signal !== 'NEUTRAL' ? `<span class="ml-1 text-xs ${item.signal === 'BUY' ? 'text-green-300' : 'text-red-300'}">${item.signal}</span>` : ''}`;
-                    container.appendChild(div);
-                });
-            });
-        }
+      // expand url for full view
+      const expandUrl = `/trade-full?symbol=${encodeURIComponent(row.symbol)}&exchange=${encodeURIComponent(row.exchange)}&qty=${row.quantity||1}&side=${side}`;
+      params.set('expand_url', expandUrl);
 
-        function generateSampleExchangeData() {
-            exchanges = {
-                'ALPACA': { scanning: true, activeSymbol: null, symbolCount: 250 },
-                'CRYPTO': { scanning: true, activeSymbol: null, symbolCount: 100 },
-                'FOREX': { scanning: true, activeSymbol: null, symbolCount: 50 },
-                'NYSE': { scanning: true, activeSymbol: null, symbolCount: 200 },
-                'FUTURES': { scanning: true, activeSymbol: null, symbolCount: 30 }
-            };
-        }
+      window.open(`/trade-popup-fixed?${params.toString()}`,
+        'TradeWindow_'+row.symbol.replace(/[^a-z0-9]/ig,''),
+        'width=520,height=70,scrollbars=no,resizable=yes');
+    }
 
-        function generateSampleScanData() {
-            const symbols = [
-                {symbol: 'BTC/USD', exchange: 'CRYPTO'}, {symbol: 'ETH/USD', exchange: 'CRYPTO'},
-                {symbol: 'AAPL', exchange: 'ALPACA'}, {symbol: 'TSLA', exchange: 'ALPACA'},
-                {symbol: 'NVDA', exchange: 'ALPACA'}, {symbol: 'SPY', exchange: 'NYSE'},
-                {symbol: 'QQQ', exchange: 'NYSE'}, {symbol: 'MSFT', exchange: 'NYSE'},
-                {symbol: 'AMZN', exchange: 'NYSE'}, {symbol: 'GOOGL', exchange: 'ALPACA'},
-                {symbol: 'META', exchange: 'NYSE'}, {symbol: 'NFLX', exchange: 'ALPACA'}
-            ];
-            scanData = [];
-            symbols.forEach(({symbol, exchange}) => {
-                scanData.push({
-                    symbol, exchange,
-                    price: (Math.random() * 500 + 50).toFixed(2),
-                    change: ((Math.random() - 0.5) * 10).toFixed(2),
-                    volume: Math.floor(Math.random() * 1000000).toLocaleString(),
-                    rsi: (Math.random() * 100).toFixed(1),
-                    // INCREASED SIGNAL GENERATION: 50% BUY, 30% SELL, 20% NEUTRAL (was 30/20/50)
-                    signal: Math.random() < 0.5 ? 'BUY' : Math.random() > 0.7 ? 'SELL' : 'NEUTRAL',
-                    signalStrength: 0,
-                    isActivelyTrading: false,
-                    isAvailable: true,
-                    quantity: exchange === 'CRYPTO' ? 0.01 : 10
-                });
-            });
-        }
+    let openedPopups = new Set();
+    let lastPopupTime = 0;
 
-        function generateSampleTickerData() {
-            const symbols = [
-                {symbol: 'BTC/USD', exchange: 'CRYPTO'}, {symbol: 'ETH/USD', exchange: 'CRYPTO'},
-                {symbol: 'AAPL', exchange: 'ALPACA'}, {symbol: 'TSLA', exchange: 'ALPACA'},
-                {symbol: 'NVDA', exchange: 'ALPACA'}, {symbol: 'SPY', exchange: 'NYSE'},
-                {symbol: 'QQQ', exchange: 'NYSE'}, {symbol: 'MSFT', exchange: 'NYSE'},
-                {symbol: 'AMZN', exchange: 'NYSE'}, {symbol: 'GOOGL', exchange: 'ALPACA'}
-            ];
-            tickerItems = [];
-            symbols.forEach(({symbol, exchange}) => {
-                tickerItems.push({
-                    symbol, exchange,
-                    price: (Math.random() * 500 + 50).toFixed(2),
-                    change: ((Math.random() - 0.5) * 10).toFixed(2),
-                    signal: Math.random() > 0.6 ? (Math.random() > 0.5 ? 'BUY' : 'SELL') : 'NEUTRAL',
-                    isAvailable: true,
-                    isActivelyTrading: false
-                });
-            });
-        }
+    function checkAndOpenPopups() {
+      const now = Date.now();
+      const testRow = scanData[testingRowIndex];
+      if (!testRow) return;
 
-        function openTradePopupForSignal(signalData) {
-            const params = new URLSearchParams({
-                symbol: signalData.symbol, side: signalData.signal, qty: signalData.quantity || 1,
-                exchange: signalData.exchange, price: signalData.price, change: signalData.change,
-                rsi: signalData.rsi, signal: signalData.signal,
-                reason: `Scanner detected ${signalData.signal} signal - RSI: ${signalData.rsi}, Volume: ${signalData.volume}`
-            });
-            // USE THE FIXED POPUP
-            window.open(`/trade-popup-fixed?${params.toString()}`, 'TradeWindow_' + signalData.symbol, 'width=900,height=1000,scrollbars=yes');
-        }
+      // throttle
+      if (now - lastPopupTime < 15000) return;
 
-        // Manual test functions - open regular popup (no auto-trade)
-        function openTradePopupTestStock() {
-            const params = new URLSearchParams({
-                symbol: 'AAPL', side: 'BUY', qty: 10,
-                exchange: 'ALPACA', price: '175.50', change: '+2.5',
-                rsi: '65.3', signal: 'BUY',
-                reason: 'Manual test - Stock'
-            });
-            window.open(`/trade-popup?${params.toString()}`, 'TradeWindow_TEST_AAPL', 'width=900,height=1000,scrollbars=yes');
-        }
+      // broker busy? skip same broker
+      if (activeTradeExchange && testRow.exchange === activeTradeExchange) return;
 
-        function openTradePopupTestCrypto() {
-            const params = new URLSearchParams({
-                symbol: 'BTC/USD', side: 'BUY', qty: 0.01,
-                exchange: 'CRYPTO', price: '43250.00', change: '+3.2',
-                rsi: '58.5', signal: 'BUY',
-                reason: 'Manual test - Crypto'
-            });
-            window.open(`/trade-popup?${params.toString()}`, 'TradeWindow_TEST_BTC', 'width=900,height=1000,scrollbars=yes');
-        }
+      if ((testRow.signal === 'BUY' || testRow.signal === 'SELL') && !openedPopups.has(testRow.symbol)) {
+        openTradePopupForSignal(testRow);
+        openedPopups.add(testRow.symbol);
+        lastPopupTime = now;
+        setTimeout(() => openedPopups.delete(testRow.symbol), 120000);
+      }
+    }
 
-        init();
-        setInterval(() => { updateExchangeStatus(); updateScanResults(); updateTickerDisplay(); }, 3000);
-        setInterval(() => {
-            if (tickerItems.length > 0) {
-                tickerItems.forEach(item => {
-                    item.price = (parseFloat(item.price) + (Math.random() - 0.5) * 2).toFixed(2);
-                    item.change = ((Math.random() - 0.5) * 10).toFixed(2);
-                });
-                updateTickerElements();
-            }
-        }, 1500);
-    </script>
+    function openTradePopupTestStock() {
+      openTradePopupForSignal({
+        symbol:'AAPL', exchange:'ALPACA', signal:'BUY', quantity:10,
+        price:'175.50', change:'+0.8', rsi:'55.0', volume:'1000000'
+      });
+    }
+    function openTradePopupTestCrypto() {
+      openTradePopupForSignal({
+        symbol:'BTC/USD', exchange:'CRYPTO', signal:'BUY', quantity:0.01,
+        price:'43250.00', change:'+0.5', rsi:'58.5', volume:'500000'
+      });
+    }
+
+    // listen for micro popup close
+    window.addEventListener('message', (event) => {
+      const d = event.data || {};
+      if (d.type === 'TRADE_CLOSED') {
+        // free broker & symbol
+        activeTradeSymbol = null;
+        activeTradeExchange = null;
+        updateExchangeStatusDisplay();
+        updateScanResultsDisplay();
+        updateTickerDisplay();
+
+        // backend notify is done inside popup; nothing else here
+      }
+    });
+
+    // ----------------- Start -----------------
+    init();
+  </script>
 </body>
 </html>
